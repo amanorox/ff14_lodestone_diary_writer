@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#17202a">
+  <title>日記エディタ</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">✎</div>
+      <div>
+        <p class="brand-title">日記エディタ</p>
+        <p class="brand-subtitle">スマートフォン対応・下書き自動保存</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button id="preview-toggle" type="button">プレビュー</button>
+      <button id="clear-button" type="button">新規作成</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="card form-card" aria-labelledby="page-title">
+      <p class="eyebrow">DIARY EDITOR</p>
+      <h1 id="page-title">日記を書く</h1>
+      <p class="intro">本文はタグを含むプレーンテキストで編集できます。書式ボタンはタグを挿入し、内容はこの端末に自動保存されます。</p>
+
+      <label class="field-label" for="title-input">タイトル <span class="required">（50文字まで）</span></label>
+      <input id="title-input" class="title-input" type="text" maxlength="50" placeholder="タイトルを入力" autocomplete="off">
+      <div id="title-count" class="title-count">0 / 50</div>
+
+      <div class="editor-head">
+        <label class="field-label" for="editor">本文 <span class="required">（必須・10,000文字まで）</span></label>
+        <button id="share-button" class="share-button" type="button">共有</button>
+      </div>
+      <div class="editor-area">
+        <div class="toolbar" role="toolbar" aria-label="本文の書式">
+          <button class="tool" type="button" data-tag="size" data-size="10" aria-label="文字サイズ小" title="文字サイズ小"><span aria-hidden="true">A<sup>−</sup></span></button>
+          <button class="tool" type="button" data-tag="size" data-size="12" aria-label="文字サイズ中" title="文字サイズ中"><span aria-hidden="true">A</span></button>
+          <button class="tool" type="button" data-tag="size" data-size="18" aria-label="文字サイズ大" title="文字サイズ大"><span aria-hidden="true">A<sup>+</sup></span></button>
+          <button class="tool" type="button" data-tag="size" data-size="32" aria-label="文字サイズ極大" title="文字サイズ極大"><span aria-hidden="true">A<sup>++</sup></span></button>
+          <span class="toolbar-wrap">
+            <button id="color-button" class="tool" type="button" aria-label="文字色" title="文字色"><span aria-hidden="true">A<span style="color:#c24b4b">●</span></span></button>
+            <span id="color-popover" class="color-popover" aria-label="文字色を選択">
+              <label class="color-custom">任意の色<input id="custom-color" type="color" value="#d64545" aria-label="任意の文字色"></label>
+            </span>
+          </span>
+          <span class="divider" aria-hidden="true"></span>
+          <button class="tool" type="button" data-tag="b" aria-label="太字" title="太字 [b]"><strong aria-hidden="true">B</strong></button>
+          <button class="tool" type="button" data-tag="i" aria-label="斜体" title="斜体 [i]"><em aria-hidden="true">I</em></button>
+          <button class="tool" type="button" data-tag="u" aria-label="下線" title="下線 [u]"><span aria-hidden="true" style="text-decoration:underline">U</span></button>
+          <button class="tool" type="button" data-tag="s" aria-label="取消線" title="取消線 [s]"><span aria-hidden="true" style="text-decoration:line-through">S</span></button>
+          <span class="divider" aria-hidden="true"></span>
+          <button class="tool" type="button" data-tag="left" aria-label="左に配置" title="左に配置 [left]"><span aria-hidden="true">☰</span></button>
+          <button class="tool" type="button" data-tag="center" aria-label="中央に配置" title="中央に配置 [center]"><span aria-hidden="true">☷</span></button>
+          <button class="tool" type="button" data-tag="right" aria-label="右に配置" title="右に配置 [right]"><span aria-hidden="true">☰</span></button>
+          <span class="divider" aria-hidden="true"></span>
+          <button id="link-button" class="tool" type="button" aria-label="リンク" title="リンク"><span aria-hidden="true">↗</span></button>
+          <button id="spoiler-button" class="tool" type="button" aria-label="隠す" title="隠す"><span aria-hidden="true">▧</span></button>
+          <button id="image-button" class="tool" type="button" aria-label="画像挿入" title="画像挿入"><span aria-hidden="true">▧＋</span></button>
+          <button id="video-button" class="tool" type="button" aria-label="動画挿入" title="動画挿入"><span aria-hidden="true">▶＋</span></button>
+        </div>
+        <textarea id="editor" class="editor" aria-label="本文をタグ付きテキストで入力" placeholder="本文を入力" maxlength="10000" spellcheck="true"></textarea>
+        <div class="editor-foot">
+          <span id="char-count" class="char-count">0 / 10,000</span>
+          <span id="save-state" class="save-state" role="status">この端末に保存されます</span>
+        </div>
+        <p class="helper">本文に入力したタグも文字数に含まれます。書式ボタンは選択範囲をタグで囲みます。</p>
+      </div>
+      <details class="tag-help">
+        <summary>使用できるタグ</summary>
+        <ul class="tag-list">
+          <li><code>[size=10]文字[/size]</code> 文字サイズ</li>
+          <li><code>[color=#FF0000]文字[/color]</code> 文字色</li>
+          <li><code>[b]文字[/b]</code> 太字</li>
+          <li><code>[i]文字[/i]</code> 斜体</li>
+          <li><code>[u]文字[/u]</code> 下線</li>
+          <li><code>[s]文字[/s]</code> 取消線</li>
+          <li><code>[left]文字[/left]</code> 左揃え</li>
+          <li><code>[center]文字[/center]</code> 中央揃え</li>
+          <li><code>[right]文字[/right]</code> 右揃え</li>
+          <li><code>[url=URL]文字[/url]</code> リンク</li>
+          <li><code>[url]URL[/url]</code> URLをそのまま表示するリンク</li>
+          <li><code>[hb]文字[/hb]</code> 折りたたみ</li>
+          <li><code>[db:image=ID]</code> Lodestone画像</li>
+          <li><code>[youtube]URL[/youtube]</code> YouTube</li>
+          <li><code>[twitch]URL[/twitch]</code> Twitch</li>
+        </ul>
+      </details>
+      <div id="preview-pane" class="preview-pane" aria-label="本文プレビュー"></div>
+      <div class="preview-toolbar">
+        <span class="helper">プレビュー表示中</span>
+        <button id="edit-again" class="tool" type="button">編集に戻る</button>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="link-dialog">
+    <form method="dialog" class="dialog-inner" id="link-form">
+      <h2>リンクを挿入</h2>
+      <p>リンク先のURLを入力してください。選択した文字にリンクを設定します。</p>
+      <input id="link-url" type="url" inputmode="url" placeholder="https://example.com" required>
+      <div class="dialog-actions">
+        <button type="button" data-close="link-dialog">キャンセル</button>
+        <button class="primary" type="submit">挿入</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="video-dialog">
+    <form method="dialog" class="dialog-inner" id="video-form">
+      <h2>動画を挿入</h2>
+      <p>YouTubeまたはTwitchの動画URLを入力してください。対応する専用タグを挿入します。</p>
+      <input id="video-url" type="url" inputmode="url" placeholder="https://youtu.be/... または https://twitch.tv/..." required>
+      <div class="dialog-actions">
+        <button type="button" data-close="video-dialog">キャンセル</button>
+        <button class="primary" type="submit">挿入</button>
+      </div>
+    </form>
+  </dialog>
+  <dialog id="image-dialog">
+    <form method="dialog" class="dialog-inner" id="image-form">
+      <h2>Lodestone画像を挿入</h2>
+      <p>画像選択で表示される画像IDを入力してください。本文には [db:image=ID] タグが挿入されます。</p>
+      <input id="image-id" type="text" inputmode="text" placeholder="画像ID" required>
+      <div class="dialog-actions">
+        <button type="button" data-close="image-dialog">キャンセル</button>
+        <button class="primary" type="submit">挿入</button>
+      </div>
+    </form>
+  </dialog>
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
